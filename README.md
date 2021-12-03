@@ -4,6 +4,7 @@ Créer les groupes d'annonces et mots-clés dans vos campagnes managed en import
 
 ## Tableau d'exemple
 
+'''
 ------------------------------------------------------------------------------
 CAMPAGNE        | GROUPE D'ANNONCE        | MOT CLE                 | MATCHING
 ------------------------------------------------------------------------------
@@ -15,6 +16,7 @@ Campagne Jambon | Jambon cru fermier      | jambon cru fermier      | Phrase
 ------------------------------------------------------------------------------
 Campagne Poulet | Poulet fermier          | poulet fermier          | Exact
 ------------------------------------------------------------------------------
+'''
 
 **RESULTAT**
 
