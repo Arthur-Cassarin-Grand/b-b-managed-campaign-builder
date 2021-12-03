@@ -18,7 +18,7 @@ Campagne Poulet | Poulet fermier          | poulet fermier          | Exact
 ------------------------------------------------------------------------------
 ```
 
-**RESULTAT**
+## RESULTAT
 
 Le groupe d'annonce aura le nom du mot-clé entouré par son keyword match ([nom] pour exact, "nom" pour phrase, nom pour large)
 
