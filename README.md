@@ -16,6 +16,12 @@ Campagne Jambon | Jambon cru fermier      | jambon cru fermier      | Phrase
 ------------------------------------------------------------------------------
 Campagne Poulet | Poulet fermier          | poulet fermier          | Exact
 ------------------------------------------------------------------------------
+Campagne Poulet | Découverte              | poulet curry            | Large
+------------------------------------------------------------------------------
+Campagne Poulet | Découverte              | poulet thaï             | Large
+------------------------------------------------------------------------------
+Campagne Poulet | Découverte              | poulet kasher           | Large
+------------------------------------------------------------------------------
 ```
 
 ## RESULTAT
@@ -30,6 +36,9 @@ Campagne Jambon ------ [Jambon cru]              ----- [Jambon cru]
                 |----- "Jambon cru fermier"      ----- "Jambon cru fermier"
 
 Campagne Poulet ------ [Poulet fermier] ----- [Poulet fermier]
+                |----- Découverte       ----- poulet curry
+                                        ----- poulet thaï
+                                        ----- poulet kasher
 ```
 
 ## Comment le faire fonctionner
