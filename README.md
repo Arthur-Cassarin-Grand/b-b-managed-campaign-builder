@@ -43,4 +43,5 @@ Créez un script dans le compte Google Ads souhaité, accordez les accès (il fa
 Faites ensuite "Exécuter" (et non pas Aperçu, car ça ne fera aucune modif sur le compte) et "Exécuter sans aperçu".
 
 Astuce : gardez toujours la même spreadsheet pour ce client et modifiez les données, cela vous évitera de modifier le script.
-Limite : Google Ads ne fait tourner un script que 30 minutes au maximum. Le script est rapide, donc vous ne devriez pas avoir de problèmes avant 100.000 occurences environ...donc vous êtes larges.
+
+Limite : Google Ads ne fait tourner un script que 30 minutes au maximum. Le script est rapide, donc vous ne devriez pas avoir de problèmes avant 100.000 occurences environ...donc vous êtes larges. Mais si vous êtes sur un énorme compte, il faudra le faire en plusieurs fois.
