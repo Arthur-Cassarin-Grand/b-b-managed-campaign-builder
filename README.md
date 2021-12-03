@@ -35,6 +35,6 @@ Campagne Poulet ------ [Poulet fermier] ----- [Poulet fermier]
 ## Comment le faire fonctionner
 
 **Les campagnes dans lesquelles vous voulez ajouter des groupes d'annonces et des mots-clés doivent déjà exister sur votre compte.**
-Créez un script dans le compte Google Ads souhaité, accorder les accès (il faut le faire deux fois, la première fois ça plante toujours...).
+Créez un script dans le compte Google Ads souhaité, accordez les accès (il faut le faire deux fois, la première fois ça plante toujours...).
 **Modifiez l'URL (YOUR_SPREADSHEET_URL) de la feuille SpreadSheet à la ligne 109 du fichier.**
 Faites "Exécuter" (et non pas Aperçu) et "Exécuter sans aperçu".
