@@ -4,7 +4,7 @@ Créer les groupes d'annonces et mots-clés dans vos campagnes managed en import
 
 ## Tableau d'exemple
 
-'''
+```
 ------------------------------------------------------------------------------
 CAMPAGNE        | GROUPE D'ANNONCE        | MOT CLE                 | MATCHING
 ------------------------------------------------------------------------------
@@ -16,12 +16,13 @@ Campagne Jambon | Jambon cru fermier      | jambon cru fermier      | Phrase
 ------------------------------------------------------------------------------
 Campagne Poulet | Poulet fermier          | poulet fermier          | Exact
 ------------------------------------------------------------------------------
-'''
+```
 
 **RESULTAT**
 
 Le groupe d'annonce aura le nom du mot-clé entouré par son keyword match ([nom] pour exact, "nom" pour phrase, nom pour large)
 
+```
 CAMPAGNE               GROUPE D'ANNONCES               MOT CLE
 -------------------------------------------------------------------
 Campagne Jambon ------ [Jambon cru]              ----- [Jambon cru]
@@ -29,6 +30,7 @@ Campagne Jambon ------ [Jambon cru]              ----- [Jambon cru]
                 |----- "Jambon cru fermier"      ----- "Jambon cru fermier"
 
 Campagne Poulet ------ [Poulet fermier] ----- [Poulet fermier]
+```
 
 ## Comment le faire fonctionner
 
