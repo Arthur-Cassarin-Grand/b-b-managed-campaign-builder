@@ -19,7 +19,7 @@
 */
 
 // WARNING : Your campaigns must exist before launching the script
-const spreadsheetUrl = "YOUR_SPREADSHEET_URL"; // MODIFY THIS
+spreadsheetUrl = "YOUR_SPREADSHEET_URL"; // MODIFY THIS
 ignoreFirstLine = true; // Ignore first header row of Gsheet sheet (by default)
 
 /*
