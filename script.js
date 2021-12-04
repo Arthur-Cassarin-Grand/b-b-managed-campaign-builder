@@ -1,58 +1,33 @@
 /**
 * AUTHOR : Arthur CASSARIN-GRAND
 * E-mail : arthur.cassarin@gmail.com
+* LICENSE : GNU Lesser General Public License v3.0
+* USAGE : You can use, copy and modify this script for both personal and commercial purposes under the same license.
+* You still MUST to write original author's name in the code.
 *
 * BULK CAMPAIGN BUILDER
-*
 * This script creates campaigns, group ads and keywords according to a Gsheet table.
 *
-* Version: 1.0
-*
+* Version: 1.0.1
+* CHANGELOG
+* 1.0.1 - 04/12/2021 - Code cleaning for public release
+* 1.0 - 03/12/2021 - Initial working release
 **/
 
-/* ####################################################################################### */
-/* --------------------------------------------------------------------------------------- */
-/* POUR FAIRE FONCTIONNER LE SCRIPT, INDIQUER SIMPLEMENT L'ADRESSE DU FICHIER GSHEET LIGNE */
-/* ATTENTION : Les campagnes où vous souhaitez créer les groupes/mots-clés doivent exister */
-/* --------------------------------------------------------------------------------------- */
-/* ####################################################################################### */
-
-/* TABLEAU A FOURNIR */
-
 /*
-------------------------------------------------------------------------------
-CAMPAGNE        | GROUPE D'ANNONCE        | MOT CLE                 | MATCHING
-------------------------------------------------------------------------------
-Campagne Jambon | Jambon cru              | jambon cru              | Exact
-------------------------------------------------------------------------------
-Campagne Jambon | Jambon cru sans nitrite | jambon cru sans nitrite | Large
-------------------------------------------------------------------------------
-Campagne Jambon | Jambon cru fermier      | jambon cru fermier      | Phrase
-------------------------------------------------------------------------------
-Campagne Poulet | Poulet fermier          | poulet fermier          | Exact
-------------------------------------------------------------------------------
+    SETTINGS
 */
 
-/* RESULTAT */
+// WARNING : Your campaigns must exist before launching the script
+const spreadsheetUrl = "YOUR_SPREADSHEET_URL"; // MODIFY THIS
+ignoreFirstLine = true; // Ignore first header row of Gsheet sheet (by default)
 
 /*
-
-Le groupe d'annonce aura le nom du mot-clé entouré par son keyword match ([nom] pour exact, "nom" pour phrase, nom pour large)
-
-CAMPAGNE               GROUPE D'ANNONCES               MOT CLE
--------------------------------------------------------------------
-Campagne Jambon ------ [Jambon cru]              ----- [Jambon cru]
-                |----- Jambon cru sans nitrite   ----- Jambon cru sans nitrite
-                |----- "Jambon cru fermier"      ----- "Jambon cru fermier"
-
-Campagne Poulet ------ [Poulet fermier] ----- [Poulet fermier]
-
+    END SETTINGS
 */
 
-/* ------------------------------ */
-/* FUNCTIONS THAT CREATE ENTITIES */
-/* ------------------------------ */
-
+// Return a name of entity (keyword, ad group) between symboles according to Google Ads match type for keywords
+// Result : [name] for exact, "name" for phrase, name for large
 function matchEntity(Entity, Match) {
     if (Match == "Exact") {
         return "[" + Entity + "]";
@@ -63,6 +38,7 @@ function matchEntity(Entity, Match) {
     }
 }
 
+// Create a keyword. Don't override existing keywords (throw an error in this case : "Keyword already exists")
 function addKeyword(Campaign, AdGroup, Keyword, Match) {
     var adGroupIterator = AdsApp.adGroups()
         .withCondition("Name = '" + matchEntity(AdGroup, Match) + "'")
@@ -74,11 +50,10 @@ function addKeyword(Campaign, AdGroup, Keyword, Match) {
         adGroup.newKeywordBuilder()
             .withText(matchEntity(Keyword, Match))
             .build();
-
-        // Logger.log("Keyword " + matchEntity(Keyword, Match) + " created in " + matchEntity(AdGroup, Match) + " ad group in campaign " + Campaign);
     }
 }
 
+// Create an ad group. Don't override existing ad group (throw an error in this case : "Keyword already exists")
 function addAdGroup(Campaign, AdGroup, Match) {
     var campaignIterator = AdsApp.campaigns()
         .withCondition("Name = '" + Campaign + "'")
@@ -88,53 +63,33 @@ function addAdGroup(Campaign, AdGroup, Match) {
         var adGroupIterator = AdsApp.adGroups()
             .withCondition("Name = '" + matchEntity(AdGroup, Match) + "'")
             .get();
-        if (adGroupIterator.hasNext()) {
-            // Skip creation because group ad already exists
-        }
-        else {
-            var adGroupOperation = campaign.newAdGroupBuilder()
-            .withName(matchEntity(AdGroup, Match))
-            .build();
-            // Logger.log("Ad group " + matchEntity(AdGroup, Match) + " created in campaign " + Campaign);
-        }
+        var adGroupOperation = campaign.newAdGroupBuilder()
+        .withName(matchEntity(AdGroup, Match))
+        .build();
     }
 }
 
 function main() {
-    /* -------------------------------------------- */
-    /* /!\ A MODIFIER AVANT LANCEMENT DU SCRIPT /!\ */
-    /* -------------------------------------------- */
-
-    // Check the spreadsheet has been entered, and that it works
-    var spreadsheetUrl = "YOUR_SPREADSHEET_URL";
-    var pauseCreatedCampaignsByDefault = true; // Si true, mets en pause les campagnes crées par le script (sécurité)
-    // Variables à modifier si besoin
-    var ignoreFirstLine = true; // Ignore la ligne d'entête par défaut
-
     var spreadsheet = SpreadsheetApp.openByUrl(spreadsheetUrl);
     var data = spreadsheet.getDataRange().getValues();
     var firstRow = false;
-    // Logger.log("[SCRIPT STARTED]");
     data.forEach(function (row) {
         // Ignore header line
         if (ignoreFirstLine) {
             if (firstRow == false) {
                 firstRow = true;
-                // Logger.log("Ignore first header line");
                 return;
             }
         }
-        //var rowValues = row.getValues();
+        // Read first 4 columns of the sheet
         var Campaign = row[0];
         var AdGroup = row[1];
         var Keyword = row[2];
         var Match = row[3];
-        // Create ad group
+        // Create ad group if needed
         addAdGroup(Campaign, AdGroup, Match);
         // Create keyword if needed
         addKeyword(Campaign, AdGroup, Keyword, Match);
     });
-    // Logger.log("[SCRIPT ENDED]");
-    // Logger.log("Job done !");
 }
 
