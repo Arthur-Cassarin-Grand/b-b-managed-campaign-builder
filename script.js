@@ -53,7 +53,7 @@ function addKeyword(Campaign, AdGroup, Keyword, Match) {
     }
 }
 
-// Create an ad group. Don't override existing ad group (throw an error in this case : "Keyword already exists")
+// Create an ad group. Don't override existing ad group (throw an error in this case : "Ad group already exists")
 function addAdGroup(Campaign, AdGroup, Match) {
     var campaignIterator = AdsApp.campaigns()
         .withCondition("Name = '" + Campaign + "'")
@@ -63,9 +63,14 @@ function addAdGroup(Campaign, AdGroup, Match) {
         var adGroupIterator = AdsApp.adGroups()
             .withCondition("Name = '" + matchEntity(AdGroup, Match) + "'")
             .get();
-        var adGroupOperation = campaign.newAdGroupBuilder()
-        .withName(matchEntity(AdGroup, Match))
-        .build();
+        if (adGroupIterator.hasNext()) {
+            // Skip creation because group ad already exists
+        }
+        else {
+            var adGroupOperation = campaign.newAdGroupBuilder()
+            .withName(matchEntity(AdGroup, Match))
+            .build();
+        }
     }
 }
 
