@@ -47,7 +47,7 @@ Campagne Poulet ------ [Poulet fermier] ----- [Poulet fermier]
 
 Créez un script dans le compte Google Ads souhaité, accordez les accès (il faut le faire deux fois, la première fois ça plante toujours...). Copiez le contenu du script.
 
-**Modifiez l'URL (YOUR_SPREADSHEET_URL) de la feuille SpreadSheet à la ligne 109 du script.**
+**Modifiez l'URL (YOUR_SPREADSHEET_URL) de la feuille SpreadSheet à la ligne 22 du script.**
 
 Faites ensuite "Exécuter" (et non pas Aperçu, car ça ne fera aucune modif sur le compte) et "Exécuter sans aperçu".
 
