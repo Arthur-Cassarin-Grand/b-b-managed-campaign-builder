@@ -8,8 +8,9 @@
 * BULK CAMPAIGN BUILDER
 * This script creates campaigns, group ads and keywords according to a Gsheet table.
 *
-* Version: 1.0.1
+* Version: 1.1
 * CHANGELOG
+* 1.1 - 06/12/2021 - Exclude keywords in old campaigns
 * 1.0.1 - 04/12/2021 - Code cleaning for public release
 * 1.0 - 03/12/2021 - Initial working release
 **/
@@ -20,6 +21,10 @@
 
 // WARNING : Your campaigns must exist before launching the script
 spreadsheetUrl = "YOUR_SPREADSHEET_URL"; // MODIFY THIS
+
+excludeManagedKeywordsInOrigialCampaigns = true; // If true, the script will add your new keywords as negative keywords in old campaigns (in 5th column)
+// /!\ If you add large keywords for discover campaigns, let the old campaign row empty not to add this exclude keyword in your old campaign
+
 ignoreFirstLine = true; // Ignore first header row of Gsheet sheet (by default)
 
 /*
@@ -68,9 +73,20 @@ function addAdGroup(Campaign, AdGroup, Match) {
         }
         else {
             var adGroupOperation = campaign.newAdGroupBuilder()
-            .withName(matchEntity(AdGroup, Match))
-            .build();
+                .withName(matchEntity(AdGroup, Match))
+                .build();
         }
+    }
+}
+
+// Add keyword (with matching) as negative in oldCampaign
+function excludeKeywordInCampaign(oldCampaign, Keyword, Match) {
+    var campaignIterator = AdsApp.campaigns()
+        .withCondition('Name = "' + oldCampaign + '"')
+        .get();
+    if (campaignIterator.hasNext()) {
+        var campaign = campaignIterator.next();
+        campaign.createNegativeKeyword(matchEntity(Keyword, Match));
     }
 }
 
@@ -91,9 +107,16 @@ function main() {
         var AdGroup = row[1];
         var Keyword = row[2];
         var Match = row[3];
+        var OldCampaign = row[4];
         // Create ad group if needed
         addAdGroup(Campaign, AdGroup, Match);
         // Create keyword if needed
         addKeyword(Campaign, AdGroup, Keyword, Match);
+        // Add negative keyword to previous campaign
+        if (OldCampaign != "") {
+            if (excludeManagedKeywordsInOrigialCampaigns) {
+                excludeKeywordInCampaign(OldCampaign, Keyword, Match);
+            }
+        }
     });
 }
