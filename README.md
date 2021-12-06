@@ -2,31 +2,34 @@
 
 Créer les groupes d'annonces et mots-clés dans vos campagnes managed en important les données depuis une fiche Google Sheet.
 
-## Tableau d'exemple
+## VOTRE FEUILLE SPREADSHEET
+
+Les noms des colonnes peuvent être changés, MAIS PAS L'ORDRE.
 
 ```
-------------------------------------------------------------------------------
-CAMPAGNE        | GROUPE D'ANNONCE        | MOT CLE                 | MATCHING
-------------------------------------------------------------------------------
-Campagne Jambon | Jambon cru              | jambon cru              | Exact
-------------------------------------------------------------------------------
-Campagne Jambon | Jambon cru sans nitrite | jambon cru sans nitrite | Large
-------------------------------------------------------------------------------
-Campagne Jambon | Jambon cru fermier      | jambon cru fermier      | Phrase
-------------------------------------------------------------------------------
-Campagne Poulet | Poulet fermier          | poulet fermier          | Exact
-------------------------------------------------------------------------------
-Campagne Poulet | Découverte              | poulet curry            | Large
-------------------------------------------------------------------------------
-Campagne Poulet | Découverte              | poulet thaï             | Large
-------------------------------------------------------------------------------
-Campagne Poulet | Découverte              | poulet kasher           | Large
-------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+CAMPAGNE        | GROUPE D'ANNONCE        | MOT CLE                 | MATCHING | Exclude KW in           |
+----------------------------------------------------------------------------------------------------------
+Campagne Jambon | Jambon cru              | jambon cru              | Exact    | Old Campaign            |
+----------------------------------------------------------------------------------------------------------
+Campagne Jambon | Jambon cru sans nitrite | jambon cru sans nitrite | Large    | (Empty not to exclude)  |
+----------------------------------------------------------------------------------------------------------
+Campagne Jambon | Jambon cru fermier      | jambon cru fermier      | Phrase   | Old Campaign            |
+----------------------------------------------------------------------------------------------------------
+Campagne Poulet | Poulet fermier          | poulet fermier          | Exact    | Old Campaign            |
+----------------------------------------------------------------------------------------------------------
+Campagne Poulet | Découverte              | poulet curry            | Large    | (Empty not to exclude)  |
+----------------------------------------------------------------------------------------------------------
+Campagne Poulet | Découverte              | poulet thaï             | Large    | (Empty not to exclude)  |
+----------------------------------------------------------------------------------------------------------
+Campagne Poulet | Découverte              | poulet kasher           | Large    | (Empty not to exclude)  |
+----------------------------------------------------------------------------------------------------------
 ```
 
 ## RESULTAT
 
-Le groupe d'annonce aura le nom du mot-clé entouré par son keyword match ([nom] pour exact, "nom" pour phrase, nom pour large)
+Le groupe d'annonce aura le nom du mot-clé entouré par son keyword match ([nom] pour exact, "nom" pour phrase, nom pour large).
+Les mots-clés (généralement les "phrase" et [exact]) seront automatiquement ajoutés comme mots-clés exclus dans la campagne en dernière colonne (laisser vide pour ne rien exclure).
 
 ```
 CAMPAGNE               GROUPE D'ANNONCES               MOT CLE
@@ -39,6 +42,8 @@ Campagne Poulet ------ [Poulet fermier] ----- [Poulet fermier]
                 |----- Découverte       ----- poulet curry
                                         ----- poulet thaï
                                         ----- poulet kasher
+                                        
+Old campaign ----- (new excluded keywords : [Jambon cru], [jambon cru fermier], [poulet fermier])
 ```
 
 ## Comment le faire fonctionner
