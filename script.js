@@ -10,7 +10,7 @@
 *
 * Version: 1.2
 * CHANGELOG
-* 1.1 - 15/12/2021 - Check if keywords was created + exclude managed keywords from other campaign's ad groups
+* 1.2 - 15/12/2021 - Check if keywords was created + exclude managed keywords from other campaign's ad groups
 * 1.1 - 06/12/2021 - Exclude keywords in old campaigns
 * 1.0.1 - 04/12/2021 - Code cleaning for public release
 * 1.0 - 03/12/2021 - Initial working release
