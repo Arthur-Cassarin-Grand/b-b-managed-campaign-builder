@@ -8,22 +8,24 @@
 * BULK CAMPAIGN BUILDER
 * This script creates campaigns, group ads and keywords according to a Gsheet table.
 *
-* Version: 1.1
+* Version: 1.2
 * CHANGELOG
+* 1.2 - 15/12/2021 - Check if keywords was created + exclude managed keywords from other campaign's ad groups
 * 1.1 - 06/12/2021 - Exclude keywords in old campaigns
 * 1.0.1 - 04/12/2021 - Code cleaning for public release
 * 1.0 - 03/12/2021 - Initial working release
 **/
 
 /*
-    SETTINGS
+    SETTINGS 
 */
 
 // WARNING : Your campaigns must exist before launching the script
 spreadsheetUrl = "YOUR_SPREADSHEET_URL"; // MODIFY THIS
 
-excludeManagedKeywordsInOrigialCampaigns = true; // If true, the script will add your new keywords as negative keywords in old campaigns (in 5th column)
+excludeManagedKeywordsInOrigialCampaigns = true; // If true, it will add your new keywords as negative keywords in old campaigns (in 5th column)
 // /!\ If you add large keywords for discover campaigns, let the old campaign row empty not to add this exclude keyword in your old campaign
+excludeManagedKeywordsInOtherAdGroups = true; // If true, it will add your new keywords as negative keywords in the other ad groups of the same campaign.
 
 ignoreFirstLine = true; // Ignore first header row of Gsheet sheet (by default)
 
@@ -90,18 +92,52 @@ function excludeKeywordInCampaign(oldCampaign, Keyword, Match) {
     }
 }
 
+// Check if keyword+matching exists in the given Ad Group
+function isKeywordInAdGroup(Campaign, AdGroup, Keyword, Match) {
+    var keywordIterator = AdsApp.keywords()
+        .withCondition('CampaignName = "' + Campaign + '"')
+        .withCondition('AdGroupName = "' + matchEntity(AdGroup, Match) + '"')
+        .get();
+    var found = false;
+    while (keywordIterator.hasNext()) {
+        var keyword = keywordIterator.next();
+        if (keyword.getText() == matchEntity(Keyword, Match)) {
+            found = true;
+        }
+    }
+    return found;
+}
+
+// Add negative keyword in other campaign's ad groups (except BuildedAdGroup)
+function excludeKeywordsInOtherAdGroups(Campaign, MatchedBuildedAdGroup, Keyword, KeyWordMatch) {
+    var adGroupIterator = AdsApp.adGroups()
+        .withCondition('CampaignName = "' + Campaign + '"')
+        .get();
+    while (adGroupIterator.hasNext()) {
+        adGroup = adGroupIterator.next();
+        if (adGroup.getName() != MatchedBuildedAdGroup) {
+            adGroup.createNegativeKeyword(matchEntity(Keyword, KeyWordMatch));
+        }
+    }
+}
+
 function main() {
     var spreadsheet = SpreadsheetApp.openByUrl(spreadsheetUrl);
     var data = spreadsheet.getDataRange().getValues();
     var firstRow = false;
+    var nRow = 1;
     data.forEach(function (row) {
         // Ignore header line
         if (ignoreFirstLine) {
             if (firstRow == false) {
+                nRow++;
                 firstRow = true;
                 return;
             }
         }
+        // Add control column
+        var sheet = spreadsheet.setActiveSheet(spreadsheet.getSheets()[0]);
+        sheet.getRange("F1").setValue("Result");
         // Read first 4 columns of the sheet
         var Campaign = row[0];
         var AdGroup = row[1];
@@ -112,11 +148,24 @@ function main() {
         addAdGroup(Campaign, AdGroup, Match);
         // Create keyword if needed
         addKeyword(Campaign, AdGroup, Keyword, Match);
-        // Add negative keyword to previous campaign
-        if (OldCampaign != "") {
-            if (excludeManagedKeywordsInOrigialCampaigns) {
-                excludeKeywordInCampaign(OldCampaign, Keyword, Match);
+        // Check if keyword has been created
+        if (isKeywordInAdGroup(Campaign, AdGroup, Keyword, Match)) {
+            // Add negative keyword to previous campaign
+            if (OldCampaign != "") {
+                if (excludeManagedKeywordsInOrigialCampaigns) {
+                    excludeKeywordInCampaign(OldCampaign, Keyword, Match);
+                }
             }
+            // Add negative keyword in other campaign's ad groups
+            if (excludeManagedKeywordsInOtherAdGroups) {
+                excludeKeywordsInOtherAdGroups(Campaign, matchEntity(AdGroup, Match), Keyword, Match);
+            }
+            sheet.getRange("F"+nRow).setValue("OK");
+        } else {
+            sheet.getRange("F"+nRow).setValue("Not created");
         }
+        
+        nRow++;
     });
 }
+
