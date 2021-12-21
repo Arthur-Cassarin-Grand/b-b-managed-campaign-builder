@@ -17,7 +17,7 @@
 **/
 
 /*
-    SETTINGS
+    SETTINGS 
 */
 
 // WARNING : Your campaigns must exist before launching the script
