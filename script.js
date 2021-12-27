@@ -8,8 +8,9 @@
 * BULK CAMPAIGN BUILDER
 * This script creates campaigns, group ads and keywords according to a Gsheet table.
 *
-* Version: 1.2
+* Version: 1.3
 * CHANGELOG
+* 1.3 - 26/12/2021 - Handle multiple campaigns to exclude keywords in (in original campaigns column -> Old Campaign,Old Campaign 2), with no space
 * 1.2 - 15/12/2021 - Check if keywords was created + exclude managed keywords from other campaign's ad groups
 * 1.1 - 06/12/2021 - Exclude keywords in old campaigns
 * 1.0.1 - 04/12/2021 - Code cleaning for public release
@@ -96,7 +97,7 @@ function excludeKeywordInCampaign(oldCampaign, Keyword, Match) {
 function isKeywordInAdGroup(Campaign, AdGroup, Keyword, Match) {
     var keywordIterator = AdsApp.keywords()
         .withCondition('CampaignName = "' + Campaign + '"')
-        .withCondition('AdGroupName = "' + matchEntity(AdGroup, Match) + '"')
+        .withCondition("AdGroupName = '" + matchEntity(AdGroup, Match) + "'")
         .get();
     var found = false;
     while (keywordIterator.hasNext()) {
@@ -141,7 +142,7 @@ function main() {
         // Read first 4 columns of the sheet
         var Campaign = row[0];
         var AdGroup = row[1];
-        var Keyword = row[2];
+        var Keyword = row[2].replace("'"," ");
         var Match = row[3];
         var OldCampaign = row[4];
         // Create ad group if needed
@@ -152,8 +153,16 @@ function main() {
         if (isKeywordInAdGroup(Campaign, AdGroup, Keyword, Match)) {
             // Add negative keyword to previous campaign
             if (OldCampaign != "") {
-                if (excludeManagedKeywordsInOrigialCampaigns) {
-                    excludeKeywordInCampaign(OldCampaign, Keyword, Match);
+                if (OldCampaign.includes(',')) {
+                    OldCampaigns = OldCampaign.split(',');
+                    var i = 0;
+                    for (i = 0; i < OldCampaigns.length; i++) {
+                        excludeKeywordInCampaign(OldCampaigns[i], Keyword, Match);
+                    }
+                } else {
+                    if (excludeManagedKeywordsInOrigialCampaigns) {
+                        excludeKeywordInCampaign(OldCampaign, Keyword, Match);
+                    }
                 }
             }
             // Add negative keyword in other campaign's ad groups
@@ -168,4 +177,3 @@ function main() {
         nRow++;
     });
 }
-
